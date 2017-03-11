@@ -46,7 +46,7 @@
  * Найденную непрерывную последовательность функция записывает в память размером size, начиная с адреса result.
  * Возвращает размер найденной последовательности.
  */
-int max_length_continous_subarray(int *input, int *result, int size);
+int max_length_continous_subarray(int *input, int *result, size_t size);
 
 int main()
 {
@@ -76,7 +76,7 @@ int main()
         printf(ERR_STR);
         return 0;
     }
-    for(int i=0; i<n; i++) {
+    for(size_t i=0; i<n; i++) {
         if(scanf("%d", &input[i]) != 1) {
             free(input);
             printf(ERR_STR);
@@ -113,7 +113,7 @@ int main()
         printf(ERR_STR);
         return 0;
     }
-    for(int i=0; i<result_length; i++) {
+    for(size_t i=0; i<result_length; i++) {
         if(printf("%d ", result[i]) < 2) {
             free(input);
             free(result);
@@ -130,14 +130,15 @@ int main()
         }
     }
 
+    // Освобождение выделенной памяти
     free(input);
     free(result);
 
     return 0;
 }
 
-int max_length_continous_subarray(int *input, int *result, int size) {
-    if(result == NULL || input == NULL || size < 0) {
+int max_length_continous_subarray(int *input, int *result, size_t size) {
+    if(result == NULL || input == NULL) {
         return -1;
     }
 
@@ -148,13 +149,13 @@ int max_length_continous_subarray(int *input, int *result, int size) {
 
     size_t temp_size = 0;
     size_t max_len = 0;
-    for(int i=0; i<size-1; i++) {
+    for(size_t i=0; i<size-1; i++) {
         if(input[i+1] - input[i] != 1) {
             if(temp_size > max_len) {
                 max_len = temp_size;
                 // max_len - количество ПАР ЭЛЕМЕНТОВ, идущих подряд, поэтому количество ЭЛЕМЕНТОВ, идущих подряд = max_len + 1.
-                // Копируем max_len + 1 элементов в массив-ответ result из массива-источника input, начиная с последней удачной проверки.
-                // Начинаем с i - max_len
+                // Копируем max_len + 1 элементов в массив-ответ result из массива-источника input, начиная со следующей позиции
+                // после последней удачной проверки: начинаем с (i + 1) - (max_len + 1) = i - max_len
                 if(!memmove(result, &input[i - max_len], (max_len + 1)*sizeof(int))) {
                     return -1;
                 }
@@ -168,8 +169,9 @@ int max_length_continous_subarray(int *input, int *result, int size) {
     if(temp_size > max_len) {
         max_len = temp_size;
         // max_len - количество ПАР ЭЛЕМЕНТОВ, идущих подряд, поэтому количество ЭЛЕМЕНТОВ, идущих подряд = max_len + 1.
-        // Копируем max_len + 1 элементов в массив-ответ result из массива-источника input, начиная с последней удачной проверки.
-        // Начинаем с i - max_len
+        // Копируем max_len + 1 элементов в массив-ответ result из массива-источника input, начиная со следующей позиции
+        // после последней удачной проверки: начинаем с (i + 1) - (max_len + 1), где i = n - 1.
+        // (n - 1 + 1) - (max_len + 1) = n - 1 - max_len
         if(!memmove(result, &input[size - 1 - max_len], (max_len + 1)*sizeof(int))) {
             return -1;
         }
