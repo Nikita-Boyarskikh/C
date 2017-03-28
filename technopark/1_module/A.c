@@ -41,6 +41,9 @@
  *   1 2 3 4 6 7 8  |  1 2 3 4
  */
 
+// Cтрока ошибки
+const char ERR_STR[] = "[error]\n";
+
 /*
  * Функция нахождения непрерывного участка наибольшей длины из массива входных данных input длиной size.
  * Найденную непрерывную последовательность функция записывает в память размером size, начиная с адреса result.
@@ -48,49 +51,21 @@
  */
 int max_length_continous_subarray(int *input, int *result, size_t size);
 
+// Ввод длины входных данных и её валидация
+int input_data_size();
+
+// Ввод массива данных и его валидация, параметр - количество данных
+int *input_data(int n);
+
 int main()
 {
-    // Cтрока ошибки
-    const char ERR_STR[] = "[error]\n";
-
     // Ввод длины массива входных данных и его валидация
-    int n;
-    if(scanf("%d", &n) < 1) {
-        printf(ERR_STR);
-        return 0;
-    }
-
-    if(n < 0) {
-        printf(ERR_STR);
-        return 0;
-    }
-
-    if(n == 0) {
-        printf("0\n");
-        return 0;
-    }
+    int n = input_data_size();
 
     // Ввод массива данных и его валидация
-    int *input = (int *)malloc(sizeof(int) * n);
-    if(input == NULL) {
-        printf(ERR_STR);
-        return 0;
-    }
-    for(size_t i=0; i<n; i++) {
-        if(scanf("%d", &input[i]) != 1) {
-            free(input);
-            printf(ERR_STR);
-            return 0;
-        }
-    }
+    int *input = input_data();
 
     // Выделение памяти под выходной массив данных
-    int *result = (int *)malloc(sizeof(int) * n);
-    if(result == NULL) {
-        free(input);
-        printf(ERR_STR);
-        return 0;
-    }
 
     // Нахождение непрерывного участка наибольшей длины из массива входных данных и проверка успешности выполнения
     int result_length = max_length_continous_subarray(input, result, n);
@@ -179,3 +154,46 @@ int max_length_continous_subarray(int *input, int *result, size_t size) {
     // max_len - количество ПАР ЭЛЕМЕНТОВ, идущих подряд, поэтому количество ЭЛЕМЕНТОВ, идущих подряд = max_len + 1.
     return max_len + 1;
 }
+
+// Ввод массива данных и его валидация, параметр - длина массива входных данных
+int *input_data(int n) {
+    int *input = (int *)malloc(sizeof(int) * n);
+    if(input == NULL) {
+        printf(ERR_STR);
+        return 0;
+    }
+    for(size_t i=0; i<n; i++) {
+        if(scanf("%d", &input[i]) != 1) {
+            free(input);
+            printf(ERR_STR);
+            return 0;
+        }
+    }
+    return input;
+}
+
+// Ввод количества входных данных и её валидация
+int input_data_size() {
+    int n;
+    if(scanf("%d", &n) < 1) {
+        printf(ERR_STR);
+        return 0;
+    }
+    if(n < 0) {
+        printf(ERR_STR);
+        return 0;
+    }
+    if(n == 0) {
+        printf("0\n");
+        return 0;
+    }
+    return n;
+}
+
+int *alloc(int n) {
+    int *result = (int *)malloc(sizeof(int) * n);
+    if(result == NULL) {
+        free(input);
+        printf(ERR_STR);
+        return 0;
+    }
